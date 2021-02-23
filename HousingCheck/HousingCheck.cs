@@ -17,7 +17,6 @@ using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Xml;
 using System.Collections.ObjectModel;
-using Lumina.Excel.GeneratedSheets;
 
 public static class Extensions
 {
@@ -35,7 +34,6 @@ namespace HousingCheck
     public class HousingCheck : IActPluginV1
     {
         public ObservableCollection<HousingItem> HousingList = new ObservableCollection<HousingItem>();
-        public ObservableCollection<HousingItemEX> HousingListEX = new ObservableCollection<HousingItemEX>();
         public BindingSource bindingSource1;
         FFXIV_ACT_Plugin.FFXIV_ACT_Plugin ffxivPlugin;
         bool initialized = false;
@@ -43,8 +41,7 @@ namespace HousingCheck
         string OtterText = "";      //上报队列
         private BackgroundWorker OtterThread;
         Label statusLabel;
-        PluginControl control;
-        public Lumina.Lumina lumina = null;
+        PluginControl control; 
 
         private object GetFfxivPlugin()
         {
@@ -122,126 +119,62 @@ namespace HousingCheck
         void NetworkReceived(string connection, long epoch, byte[] message)
         {
             var opcode = BitConverter.ToUInt16(message, 18);
-            Log("Info", $"Opcode:{opcode}");
-            if (opcode == 941) 
+            if (opcode != 0x164 && message.Length != 2440) return;
+            var data_list = message.SubArray(32, message.Length - 32);
+            var data_header = data_list.SubArray(0, 8);
+            string area = "";
+            if (data_header[4] == 0x53)
+                area = "海雾村";
+            else if (data_header[4] == 0x54)
+                area = "薰衣草苗圃";
+            else if (data_header[4] == 0x55)
+                area = "高脚孤丘";
+            else if (data_header[4] == 0x81)
+                area = "白银乡";
+            int slot = data_header[2];
+            for (int i = 8; i < data_list.Length; i += 40)
             {
-                var data_list = message.SubArray(32, message.Length - 32);
-                var data_header = data_list.SubArray(0, 8);
-                string area = "";
-                if (data_header[4] == 0x53)
-                    area = "海雾村";
-                else if (data_header[4] == 0x54)
-                    area = "薰衣草苗圃";
-                else if (data_header[4] == 0x55)
-                    area = "高脚孤丘";
-                else if (data_header[4] == 0x81)
-                    area = "白银乡";
-                int slot = data_header[2];
-                for (int i = 8; i < data_list.Length; i += 40)
+                var house_id = (i - 8) / 40;
+                var name_header = data_list.SubArray(i, 8);
+                int price = BitConverter.ToInt32(name_header, 0);
+                string size = (price > 30000000) ? "L" : ((price > 10000000) ? "M" : "S");
+                var name_array = data_list.SubArray(i + 8, 32);
+                if (name_array[0] == 0)
                 {
-                    var house_id = (i - 8) / 40;
-                    var name_header = data_list.SubArray(i, 8);
-                    int price = BitConverter.ToInt32(name_header, 0);
-                    string size = (price > 30000000) ? "L" : ((price > 10000000) ? "M" : "S");
-                    var name_array = data_list.SubArray(i + 8, 32);
-                    if (name_array[0] == 0)
+                    string text = $"{area} 第{slot + 1}区 {house_id + 1}号 {size}房在售 当前价格:{price} {Environment.NewLine}";
+                    Log("Info", text);
+                    var housignItem = new HousingItem(
+                            area,
+                            slot + 1,
+                            house_id + 1,
+                            size,
+                            price
+                        );
+                    if(HousingList.IndexOf(housignItem) == -1)
                     {
-                        string text = $"{area} 第{slot + 1}区 {house_id + 1}号 {size}房在售 当前价格:{price} {Environment.NewLine}";
-                        Log("Info", text);
-                        var housignItem = new HousingItem(
-                                area,
-                                slot + 1,
-                                house_id + 1,
-                                size,
-                                price
-                            );
-                        if (HousingList.IndexOf(housignItem) == -1)
-                        {
-                            bindingSource1.Add(housignItem);
-                        }
-                        else
-                        {
-                            HousingList[HousingList.IndexOf(housignItem)].ExistenceTime = DateTime.Now;     //更新时间
-                            HousingList[HousingList.IndexOf(housignItem)].Price = price;                    //更新价格
-                            Log("Info", "重复土地，已更新。");
-                        }
-                        if (size == "M" || size == "L")
-                        {
-                            Console.Beep(3000, 1000);
-                        }
-                        if (control.upload)
-                        {
-                            if (!control.checkBoxML.Checked || (size == "M" || size == "L"))
-                            {
-                                OtterText += text;
-                                OtterUploadFlag = true;
-                            }
-                        }
-                    }
-
-                }
-                Log("Info", $"查询第{slot + 1}区");     //输出翻页日志
-            }
-
-            if (opcode == 620)      //住房资料页面
-            {
-                var data = message.SubArray(32, message.Length - 32);
-
-                int area = BitConverter.ToUInt16(data, 4);
-                int slot = BitConverter.ToUInt16(data, 2);
-                int houseID = BitConverter.ToUInt16(data, 0);
-                bool isOpen = (data[20] == 1);
-                string size = (data[21] == 2) ? "L" : ((data[21] == 1) ? "M" : "S");
-
-                string houseName = Encoding.UTF8.GetString(data.SubArray(23, 23)).Trim('\0');
-                string houseDescription = Encoding.UTF8.GetString(data.SubArray(46, 193)).Trim('\0');
-                string ownerName = Encoding.UTF8.GetString(data.SubArray(239, 31)).Trim('\0');
-                string ownerNick = Encoding.UTF8.GetString(data.SubArray(270, 7)).Trim('\0');
-                
-                string areaName;
-
-                switch (area)
-                {
-                    case 0x53:
-                        areaName = "海雾村";
-                        break;
-                    case 0x54:
-                        areaName = "薰衣草苗圃";
-                        break;
-                    case 0x55:
-                        areaName = "高脚孤丘";
-                        break;
-                    case 0x81:
-                        areaName = "白银乡";
-                        break;
-                    default:
-                        areaName = "UnknownArea";
-                        break;
-                }
-
-                var housetag1 = lumina.GetExcelSheet<HousingAppeal>(Lumina.Data.Language.ChineseSimplified).GetRow((uint)data[277]);
-                var housetag2 = lumina.GetExcelSheet<HousingAppeal>(Lumina.Data.Language.ChineseSimplified).GetRow((uint)data[278]);
-                var housetag3 = lumina.GetExcelSheet<HousingAppeal>(Lumina.Data.Language.ChineseSimplified).GetRow((uint)data[279]);
-
-                var HousingItemEX = new HousingItemEX(areaName, slot + 1, houseID + 1, size, houseName, isOpen, 0, ownerName, $"{ housetag1.Tag}", $"{ housetag2.Tag}", $"{ housetag3.Tag}", DateTime.MinValue, 0, 0, 0, "", ownerNick);
-                if (HousingListEX.IndexOf(HousingItemEX) == -1)
-                {
-                    HousingListEX.Add(HousingItemEX);
-                    if (BitConverter.ToString(data.SubArray(14, 1)) == "0A")
-                    {
-                        Log("Info", $"查询第{houseID + 1}号房，部队房");     //输出翻页日志
+                        bindingSource1.Add(housignItem);
                     }
                     else
                     {
-                        Log("Info", $"查询第{houseID + 1}号房，个人房");     //输出翻页日志
+                        HousingList[HousingList.IndexOf(housignItem)].ExistenceTime = DateTime.Now;     //更新时间
+                        HousingList[HousingList.IndexOf(housignItem)].Price = price;                    //更新价格
+                        Log("Info", "重复土地，已更新。");
+                    }
+                    if(size == "M" || size == "L")
+                    {
+                        Console.Beep(3000, 1000);
+                    }
+                    if (control.upload)
+                    {
+                        if (!control.checkBoxML.Checked || (size == "M" || size == "L"))
+                        {
+                            OtterText += text;
+                            OtterUploadFlag = true;
+                        }
                     }
                 }
             }
-        }
-
-        void HousingRecord(byte[] message)
-        {
-
+            Log("Info", $"查询第{slot + 1}区");     //输出翻页日志
         }
 
         private void ButtonUploadOnce_Click(object sender, EventArgs e)
