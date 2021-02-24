@@ -58,8 +58,8 @@ namespace HousingCheck
 
     public class HousingItemEX : IEquatable<HousingItemEX>
     {
-        public HousingItemEX(string _area, int _slot, int _id, string _size, string _name, bool _isOpen, int _price, string _ownerName, string _tag1, string _tag2, string _tag3,
-                             DateTime _fcTimeCreate, int _fcPopulation, int _fcOnline, int _fcLevel, string _fcName, string _fcTag)
+        public HousingItemEX(string _area, int _slot, int _id, string _size, string _name, bool _isOpen, bool _isFC, int _price, string _ownerName, string _tag1, string _tag2, string _tag3,
+                             string _fcLeader, DateTime _fcTimeCreate, int _fcPopulation, int _fcOnline, int _fcLevel, string _fcName, string _fcTag, string _description)
         {
             Area = _area;
             Slot = _slot;
@@ -67,17 +67,20 @@ namespace HousingCheck
             Size = _size;
             Name = _name;
             IsOpen = _isOpen;
+            IsFC = _isFC;
             Price = _price;
             Owner_Name = _ownerName;
             Tag1 = _tag1;
             Tag2 = _tag2;
             Tag3 = _tag3;
+            FC_Leader = _fcLeader;
             FC_TimeCreated = _fcTimeCreate;
             FC_Population = _fcPopulation;
             FC_Online = _fcOnline;
             FC_Level = _fcLevel;
             FC_Name = _fcName;
             FC_Tag = _fcTag;
+            House_Description = _description;
             //AddTime = DateTime.Now;
             //ExistenceTime = DateTime.Now;
         }
@@ -100,10 +103,14 @@ namespace HousingCheck
         public string Tag3 { get; set; }
         [DisplayName("是否开放")]
         public bool IsOpen { get; set; }
+        [DisplayName("部队房/个人房")]
+        public bool IsFC { get; set; }
         [DisplayName("价格")]
         public int Price { get; set; }
-        [DisplayName("持有人/部队长")]
+        [DisplayName("房屋持有对象")]
         public string Owner_Name { get; set; }
+        [DisplayName("部队长")]
+        public string FC_Leader { get; set; }
         [DisplayName("部队创建时间")]
         public DateTime FC_TimeCreated { get; set; }
         [DisplayName("部队人口")]
@@ -116,6 +123,8 @@ namespace HousingCheck
         public string FC_Name { get; set; }
         [DisplayName("部队后缀")]
         public string FC_Tag { get; set; }
+        [DisplayName("房屋详情")]
+        public string House_Description { get; set; }
 
         public bool Equals(HousingItemEX obj)
         {
@@ -131,10 +140,85 @@ namespace HousingCheck
             return (obj.Area == Area
                         && obj.Slot == Slot
                         && obj.Id == Id
-                        && obj.Size == Size
-                        && obj.Price == Price);
+                        && obj.FC_Tag == FC_Tag);
         }
 
     }
 
+    public class HousingData
+    {
+        public string HousingAppeal(uint ID)
+        {
+            switch (ID)
+            {
+                case 0:
+                    return "无";
+                case 1:
+                    return "商店";
+                case 2:
+                    return "服装模特商店";
+                case 3:
+                    return "内部装潢别致";
+                case 4:
+                    return "交流簿";
+                case 5:
+                    return "酒馆";
+                case 6:
+                    return "餐馆";
+                case 7:
+                    return "角色扮演";
+                case 8:
+                    return "咖啡馆";
+                case 9:
+                    return "水族馆";
+                case 10:
+                    return "教堂";
+                case 11:
+                    return "活动会场";
+                case 12:
+                    return "花店";
+                case 14:
+                    return "图书馆";
+                case 15:
+                    return "摄影棚";
+                case 16:
+                    return "鬼怪屋";
+                case 17:
+                    return "工房";
+                case 18:
+                    return "浴场";
+                case 19:
+                    return "植物园";
+                case 20:
+                    return "东方样式";
+                case 21:
+                    return "欢迎来访";
+                case 22:
+                    return "面包房";
+                case 23:
+                    return "装修中";
+                case 24:
+                    return "剧场";
+                default:
+                    return "无";
+            }
+        }
+           
+        public string HousingArea(uint ID)
+        {
+            switch (ID)
+            {
+                case 0x53:
+                    return "海雾村";
+                case 0x54:
+                    return "薰衣草苗圃";
+                case 0x55:
+                    return "高脚孤丘";
+                case 0x81:
+                    return "白银乡";
+                default:
+                    return "UnknownArea";
+            }
+        }
+    }
 }

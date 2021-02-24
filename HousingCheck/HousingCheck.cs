@@ -42,7 +42,11 @@ namespace HousingCheck
         string OtterText = "";      //上报队列
         private BackgroundWorker OtterThread;
         Label statusLabel;
-        PluginControl control; 
+        PluginControl control;
+        char[] charsToTrim = { '\0', '\r', '\n', ' ' };
+        Regex regex = new Regex("(\0|\a|\b|\t|\n|\v|\f|\r|[\x01-\x1F])");
+        bool isLimitReleased = false;
+        bool MoreDetailFlag = false;
 
         private object GetFfxivPlugin()
         {
@@ -103,6 +107,9 @@ namespace HousingCheck
             control.buttonUploadOnce.Click += ButtonUploadOnce_Click;
             control.buttonCopyToClipboard.Click += ButtonCopyToClipboard_Click;
             control.buttonSaveToFile.Click += ButtonSaveToFile_Click;
+
+            isLimitReleased = control.checkBoxLimitMode.Checked;
+            control.buttonSaveDetailToFile.Click += ButtonSaveDetailToFile_Click;
         }
 
 
@@ -120,7 +127,14 @@ namespace HousingCheck
         void NetworkReceived(string connection, long epoch, byte[] message)
         {
             var opcode = BitConverter.ToUInt16(message, 18);
-            Log("Info", $"opcode:{opcode}");
+            if (isLimitReleased)
+            {
+                MoreDetailFlag = control.checkBoxDetailRecord.Checked;
+            }
+            //if (MoreDetailFlag)
+            //{
+            //    //Log("Info", $"opcode:{opcode}");
+            //}
             if (opcode == 941)
             {
                 var data_list = message.SubArray(32, message.Length - 32);
@@ -156,6 +170,14 @@ namespace HousingCheck
                         if (HousingList.IndexOf(housignItem) == -1)
                         {
                             bindingSource1.Add(housignItem);
+                            if (MoreDetailFlag)
+                            {
+                                var HousingItemEX = new HousingItemEX(area, slot + 1, house_id + 1, "", "", false, false, price, "在售", "", "", "", "", DateTime.MinValue, 0, 0, 0, "", "", $"土地出售中，价格：{price}");
+                                if (HousingListEX.IndexOf(HousingItemEX) == -1)
+                                {
+                                    HousingListEX.Add(HousingItemEX);
+                                }
+                            }
                         }
                         else
                         {
@@ -180,63 +202,129 @@ namespace HousingCheck
                 Log("Info", $"查询第{slot + 1}区");     //输出翻页日志
 
             }
+
             if (opcode == 620)      //住房资料页面
             {
+                if (!MoreDetailFlag)
+                {
+                    return;
+                }
+                var HousingData = new HousingData();
                 var data = message.SubArray(32, message.Length - 32);
 
-                int area = BitConverter.ToUInt16(data, 4);
+                uint area = data[4];
                 int slot = BitConverter.ToUInt16(data, 2);
                 int houseID = BitConverter.ToUInt16(data, 0);
                 bool isOpen = (data[20] == 1);
                 string size = (data[21] == 2) ? "L" : ((data[21] == 1) ? "M" : "S");
+                string houseName = Encoding.UTF8.GetString(data.SubArray(23, 21)).Trim();
+                houseName = regex.Replace(houseName, "");
+                string houseDescription = Encoding.UTF8.GetString(data.SubArray(46, 192)).Trim();
+                houseDescription = regex.Replace(houseDescription, "");
+                string ownerName = Encoding.UTF8.GetString(data.SubArray(239, 30)).Trim();
+                ownerName = regex.Replace(ownerName, "");
+                string ownerNick = Encoding.UTF8.GetString(data.SubArray(270, 7)).Trim();
+                ownerNick = regex.Replace(ownerNick, "");
 
-                string houseName = Encoding.UTF8.GetString(data.SubArray(23, 23)).Trim('\0');
-                string houseDescription = Encoding.UTF8.GetString(data.SubArray(46, 193)).Trim('\0');
-                string ownerName = Encoding.UTF8.GetString(data.SubArray(239, 31)).Trim('\0');
-                string ownerNick = Encoding.UTF8.GetString(data.SubArray(270, 7)).Trim('\0');
+                bool isFC = (BitConverter.ToString(data.SubArray(14, 1)) == "0A");
 
-                string areaName;
-
-                switch (area)
-                {
-                    case 0x53:
-                        areaName = "海雾村";
-                        break;
-                    case 0x54:
-                        areaName = "薰衣草苗圃";
-                        break;
-                    case 0x55:
-                        areaName = "高脚孤丘";
-                        break;
-                    case 0x81:
-                        areaName = "白银乡";
-                        break;
-                    default:
-                        areaName = "UnknownArea";
-                        break;
-                }
-
+                string areaName = HousingData.HousingArea(area);
                 //var housetag1 = lumina.GetExcelSheet<HousingAppeal>(Lumina.Data.Language.ChineseSimplified).GetRow((uint)data[277]);
                 //var housetag2 = lumina.GetExcelSheet<HousingAppeal>(Lumina.Data.Language.ChineseSimplified).GetRow((uint)data[278]);
                 //var housetag3 = lumina.GetExcelSheet<HousingAppeal>(Lumina.Data.Language.ChineseSimplified).GetRow((uint)data[279]);
+                string housetag1 = HousingData.HousingAppeal((uint)data[277]);
+                string housetag2 = HousingData.HousingAppeal((uint)data[278]);
+                string housetag3 = HousingData.HousingAppeal((uint)data[279]);
 
                 //var HousingItemEX = new HousingItemEX(areaName, slot + 1, houseID + 1, size, houseName, isOpen, 0, ownerName, $"{ housetag1.Tag}", $"{ housetag2.Tag}", $"{ housetag3.Tag}", DateTime.MinValue, 0, 0, 0, "", ownerNick);
-                var HousingItemEX = new HousingItemEX(areaName, slot + 1, houseID + 1, size, houseName, isOpen, 0, ownerName, $"{ 111}", $"{ 222}", $"{ 333}", DateTime.MinValue, 0, 0, 0, "", ownerNick);
+                var HousingItemEX = new HousingItemEX(areaName, slot + 1, houseID + 1, size, houseName, isOpen, isFC, 0, ownerName, $"{ housetag1}", $"{ housetag2}", $"{ housetag3}", "", DateTime.MinValue, 0, 0, 0, "", ownerNick, houseDescription);
+
 
 
                 if (HousingListEX.IndexOf(HousingItemEX) == -1)
                 {
-                    HousingListEX.Add(HousingItemEX);
-                    if (BitConverter.ToString(data.SubArray(14, 1)) == "0A")
+                    if (isFC)
                     {
-                        Log("Info", $"查询第{houseID + 1}号房，部队房");     //输出翻页日志
+                        HousingItemEX.Owner_Name = $"《{ownerNick}》";
+                        HousingListEX.Add(HousingItemEX);
+                        Log("Info", $"查询{areaName}第{slot + 1}区{houseID + 1}号房，部队房");     //输出翻页日志
                     }
                     else
                     {
-                        Log("Info", $"查询第{houseID + 1}号房，个人房");     //输出翻页日志
+                        HousingListEX.Add(HousingItemEX);
+                        Log("Info", $"查询{areaName}第{slot + 1}区{houseID + 1}号房，个人房");     //输出翻页日志
+                    }
+                }
+                else
+                {
+                    if (isFC)
+                    {
+                        Log("Info", $"查询{areaName}第{slot + 1}区{houseID + 1}号房，部队房，记录已存在");     //输出翻页日志
+                    }
+                    else
+                    {
+                        Log("Info", $"查询{areaName}第{slot + 1}区{houseID + 1}号房，个人房，记录已存在");     //输出翻页日志
                     }
                 }
             }
+
+            if (opcode == 816)      //部队信息页面
+            {
+                if (!MoreDetailFlag)
+                {
+                    return;
+                }
+
+                var HousingData = new HousingData();
+                var data = message.SubArray(32, message.Length - 32);
+
+                int houseID = BitConverter.ToUInt16(data, 24);
+                int slot = BitConverter.ToUInt16(data, 26);
+                uint area = (uint)data[28];
+                //Log("Debug", $"Area:{area}");
+                long fc_TimeCreatedUNIX = BitConverter.ToInt32(data, 36);
+                DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(fc_TimeCreatedUNIX);
+                DateTime fcTimeCreated = dto.LocalDateTime;
+
+                int fcPupulation = BitConverter.ToUInt16(data, 44);
+                int fcOnline = BitConverter.ToUInt16(data, 46);
+                int fcLevel = BitConverter.ToUInt16(data, 56);
+                
+                string fcName = Encoding.UTF8.GetString(data.SubArray(58, 22)).Trim(charsToTrim);
+                fcName = regex.Replace(fcName, "");
+                string fcTag = Encoding.UTF8.GetString(data.SubArray(80, 7)).Trim(charsToTrim);
+                string fcLeader = Encoding.UTF8.GetString(data.SubArray(87, 32)).Trim(charsToTrim);
+                fcLeader = regex.Replace(fcLeader, "");
+
+                string areaName = HousingData.HousingArea(area);
+
+                var HousingItemEX = new HousingItemEX(areaName, slot + 1, houseID + 1, "", "", false, true, 0, "", "", "", "", fcLeader, fcTimeCreated, fcPupulation, fcOnline, fcLevel, fcName, fcTag, "");
+
+
+
+                if (HousingListEX.IndexOf(HousingItemEX) == -1)
+                {
+                    Log("Info", $"所查询部队{fcName}的房屋在{areaName},第{slot + 1}区{houseID + 1}号房，未记录");
+                }
+                else
+                {
+                    Log("Info", $"所查询部队{fcName}的房屋在{areaName},第{slot + 1}区{houseID + 1}号房，已记录");
+                    int index = HousingListEX.IndexOf(HousingItemEX);
+                    HousingListEX[index].FC_Leader = fcLeader;
+                    HousingListEX[index].FC_TimeCreated = fcTimeCreated;
+                    HousingListEX[index].FC_Population = fcPupulation;
+                    HousingListEX[index].FC_Online = fcOnline;
+                    HousingListEX[index].FC_Level = fcLevel;
+                    HousingListEX[index].FC_Name = fcName;
+                }
+                //string fileName = $"HousingCheck-{DateTime.Now.ToString("u").Replace(":", "").Replace(" ", "").Replace("-", "")}.txt";
+                //File.AppendAllText(
+                //    Path.Combine(Environment.CurrentDirectory, fileName),   //ACT根目录
+                //    fcName
+                //    );
+                //Log("Info", $"已保存到{Environment.CurrentDirectory}, {fileName}");
+            }
+
         }
 
         private void ButtonUploadOnce_Click(object sender, EventArgs e)
@@ -295,6 +383,33 @@ namespace HousingCheck
 
             return stringBuilder.ToString();
         }
+
+        private void ButtonSaveDetailToFile_Click(object sender, EventArgs e)
+        {
+            Log("Info", "数据提取中……");
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var L in HousingListEX)
+            {
+                stringBuilder.Append(   $"{L.Area}\t{L.Slot}\t{L.Id}\t{L.Size}\t{L.Name}\t" +
+
+                                        $"{((L.IsOpen) ? "开放" : "关闭")}\t{L.Tag1}\t{L.Tag2}\t{L.Tag3}\t" +
+
+                                        $"{((L.IsFC) ? "部队房" : "个人房")}\t{L.Owner_Name}\t{L.House_Description} \t" +
+
+                                        $"{((L.IsFC) ? ($"{L.FC_Leader}\t{L.FC_Name}\t{L.FC_Level}\t{L.FC_Population}\t{L.FC_Online}\t{L.FC_TimeCreated:F} ") : "")}" +     //{if(IsFC) {output FC infomation} else {output empty} }
+
+                                        $"{Environment.NewLine}");
+            }
+            Log("Info", "数据提取完成");
+            string fileName = $"HousingCheck-{DateTime.Now.ToString("u").Replace(":", "").Replace(" ", "").Replace("-", "")}.txt";
+            File.AppendAllText(
+                Path.Combine(Environment.CurrentDirectory, fileName),   //ACT根目录
+                stringBuilder.ToString()
+                );
+            Log("Info", $"已保存到{Environment.CurrentDirectory}, {fileName}");
+
+        }
+
 
         private void OtterUpload(object sender, DoWorkEventArgs e)
         {

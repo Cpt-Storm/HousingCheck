@@ -43,12 +43,18 @@ namespace HousingCheck
             this.buttonCopyToClipboard = new System.Windows.Forms.Button();
             this.buttonSaveToFile = new System.Windows.Forms.Button();
             this.buttonUploadOnce = new System.Windows.Forms.Button();
+            this.checkBoxLimitMode = new System.Windows.Forms.CheckBox();
+            this.groupBoxLimitMode = new System.Windows.Forms.GroupBox();
+            this.checkBoxDetailRecord = new System.Windows.Forms.CheckBox();
+            this.buttonSaveDetailToFile = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBoxTable.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.housingCheckBindingSource)).BeginInit();
             this.groupBoxUpload.SuspendLayout();
             this.groupBoxLog.SuspendLayout();
             this.groupBoxControl.SuspendLayout();
+            this.groupBoxLimitMode.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxTable
@@ -179,16 +185,70 @@ namespace HousingCheck
             this.buttonUploadOnce.Text = "手动上报一次";
             this.buttonUploadOnce.UseVisualStyleBackColor = true;
             // 
+            // checkBoxLimitMode
+            // 
+            this.checkBoxLimitMode.AutoSize = true;
+            this.checkBoxLimitMode.Location = new System.Drawing.Point(9, 20);
+            this.checkBoxLimitMode.Name = "checkBoxLimitMode";
+            this.checkBoxLimitMode.Size = new System.Drawing.Size(96, 16);
+            this.checkBoxLimitMode.TabIndex = 3;
+            this.checkBoxLimitMode.Text = "开启隐藏模式";
+            this.checkBoxLimitMode.UseVisualStyleBackColor = true;
+            this.checkBoxLimitMode.CheckedChanged += new System.EventHandler(this.checkBoxLimitMode_CheckedChanged);
+            // 
+            // groupBoxLimitMode
+            // 
+            this.groupBoxLimitMode.Controls.Add(this.checkBoxDetailRecord);
+            this.groupBoxLimitMode.Controls.Add(this.button1);
+            this.groupBoxLimitMode.Controls.Add(this.buttonSaveDetailToFile);
+            this.groupBoxLimitMode.Controls.Add(this.checkBoxLimitMode);
+            this.groupBoxLimitMode.Location = new System.Drawing.Point(562, 621);
+            this.groupBoxLimitMode.Name = "groupBoxLimitMode";
+            this.groupBoxLimitMode.Size = new System.Drawing.Size(321, 96);
+            this.groupBoxLimitMode.TabIndex = 4;
+            this.groupBoxLimitMode.TabStop = false;
+            this.groupBoxLimitMode.Text = "隐藏模式";
+            this.groupBoxLimitMode.Visible = false;
+            // 
+            // checkBoxDetailRecord
+            // 
+            this.checkBoxDetailRecord.AutoSize = true;
+            this.checkBoxDetailRecord.Location = new System.Drawing.Point(9, 49);
+            this.checkBoxDetailRecord.Name = "checkBoxDetailRecord";
+            this.checkBoxDetailRecord.Size = new System.Drawing.Size(72, 16);
+            this.checkBoxDetailRecord.TabIndex = 3;
+            this.checkBoxDetailRecord.Text = "记录详情";
+            this.checkBoxDetailRecord.UseVisualStyleBackColor = true;
+            // 
+            // buttonSaveDetailToFile
+            // 
+            this.buttonSaveDetailToFile.Location = new System.Drawing.Point(205, 16);
+            this.buttonSaveDetailToFile.Name = "buttonSaveDetailToFile";
+            this.buttonSaveDetailToFile.Size = new System.Drawing.Size(98, 23);
+            this.buttonSaveDetailToFile.TabIndex = 0;
+            this.buttonSaveDetailToFile.Text = "保存到文件";
+            this.buttonSaveDetailToFile.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(205, 45);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(98, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "保存简要信息";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // PluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBoxLimitMode);
             this.Controls.Add(this.groupBoxControl);
             this.Controls.Add(this.groupBoxLog);
             this.Controls.Add(this.groupBoxUpload);
             this.Controls.Add(this.groupBoxTable);
             this.Name = "PluginControl";
-            this.Size = new System.Drawing.Size(940, 655);
+            this.Size = new System.Drawing.Size(940, 858);
             this.groupBoxTable.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.housingCheckBindingSource)).EndInit();
@@ -197,6 +257,8 @@ namespace HousingCheck
             this.groupBoxLog.ResumeLayout(false);
             this.groupBoxLog.PerformLayout();
             this.groupBoxControl.ResumeLayout(false);
+            this.groupBoxLimitMode.ResumeLayout(false);
+            this.groupBoxLimitMode.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -216,5 +278,10 @@ namespace HousingCheck
         public System.Windows.Forms.Button buttonCopyToClipboard;
         public System.Windows.Forms.Button buttonSaveToFile;
         public System.Windows.Forms.Button buttonUploadOnce;
+        public System.Windows.Forms.CheckBox checkBoxLimitMode;
+        public System.Windows.Forms.GroupBox groupBoxLimitMode;
+        public System.Windows.Forms.CheckBox checkBoxDetailRecord;
+        public System.Windows.Forms.Button buttonSaveDetailToFile;
+        public System.Windows.Forms.Button button1;
     }
 }
