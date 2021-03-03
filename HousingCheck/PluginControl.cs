@@ -43,9 +43,11 @@ namespace HousingCheck
                 checkBoxUpload.Checked = bool.Parse(head?.SelectSingleNode("AutoUpload")?.InnerText ?? "false");
                 checkBoxML.Checked = bool.Parse(head?.SelectSingleNode("ML")?.InnerText ?? "true");
                 numericUpDownTimeout.Value = decimal.Parse(head?.SelectSingleNode("Timeout")?.InnerText ?? "45");
+                checkBoxLimitMode.Checked = bool.Parse(head?.SelectSingleNode("LimitReleased")?.InnerText ?? "false");
+                groupBoxLimitMode.Visible = bool.Parse(head?.SelectSingleNode("LimitReleased")?.InnerText ?? "false");
             }
-
         }
+
         public void SaveSettings()
         {
             FileStream fs = new FileStream(SettingsFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
@@ -56,10 +58,16 @@ namespace HousingCheck
             xWriter.WriteElementString("AutoUpload", checkBoxUpload.Checked.ToString());
             xWriter.WriteElementString("ML", checkBoxML.Checked.ToString());
             xWriter.WriteElementString("Timeout", numericUpDownTimeout.Value.ToString());
+            xWriter.WriteElementString("LimitReleased", checkBoxLimitMode.Checked.ToString());
             xWriter.WriteEndElement();              // </Config>
             xWriter.WriteEndDocument();             // Tie up loose ends (shouldn't be any)
             xWriter.Flush();                        // Flush the file buffer to disk
             xWriter.Close();
+        }
+
+        private void checkBoxLimitMode_CheckedChanged(object sender, EventArgs e)
+        {
+            groupBoxLimitMode.Visible = checkBoxLimitMode.Checked;
         }
     }
 }
