@@ -78,6 +78,7 @@
   <ItemGroup>
     <None Include="Properties\DataSources\Extensions.datasource" />
     <None Include="Properties\DataSources\HousingCheck.datasource" />
+    <None Include="Properties\DataSources\HousingItem.datasource" />
     <None Include="Properties\DataSources\PluginControl.datasource" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

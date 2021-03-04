@@ -32,7 +32,13 @@ namespace HousingCheck
             this.components = new System.ComponentModel.Container();
             this.groupBoxTable = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.housingCheckBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.areaDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.slotDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sizeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.addTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.existenceTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBoxUpload = new System.Windows.Forms.GroupBox();
             this.checkBoxML = new System.Windows.Forms.CheckBox();
             this.textBoxUpload = new System.Windows.Forms.TextBox();
@@ -40,9 +46,12 @@ namespace HousingCheck
             this.groupBoxLog = new System.Windows.Forms.GroupBox();
             this.textBoxLog = new System.Windows.Forms.TextBox();
             this.groupBoxControl = new System.Windows.Forms.GroupBox();
+            this.numericUpDownTimeout = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             this.buttonCopyToClipboard = new System.Windows.Forms.Button();
             this.buttonSaveToFile = new System.Windows.Forms.Button();
             this.buttonUploadOnce = new System.Windows.Forms.Button();
+            this.housingCheckBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBoxLimitMode = new System.Windows.Forms.CheckBox();
             this.groupBoxLimitMode = new System.Windows.Forms.GroupBox();
             this.checkBoxDetailRecord = new System.Windows.Forms.CheckBox();
@@ -50,10 +59,11 @@ namespace HousingCheck
             this.button1 = new System.Windows.Forms.Button();
             this.groupBoxTable.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.housingCheckBindingSource)).BeginInit();
             this.groupBoxUpload.SuspendLayout();
             this.groupBoxLog.SuspendLayout();
             this.groupBoxControl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTimeout)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.housingCheckBindingSource)).BeginInit();
             this.groupBoxLimitMode.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -73,13 +83,76 @@ namespace HousingCheck
             this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.areaDataGridViewTextBoxColumn,
+            this.slotDataGridViewTextBoxColumn,
+            this.idDataGridViewTextBoxColumn,
+            this.sizeDataGridViewTextBoxColumn,
+            this.priceDataGridViewTextBoxColumn,
+            this.addTimeDataGridViewTextBoxColumn,
+            this.existenceTimeDataGridViewTextBoxColumn});
             this.dataGridView1.Location = new System.Drawing.Point(7, 18);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(525, 578);
             this.dataGridView1.TabIndex = 0;
+            // 
+            // areaDataGridViewTextBoxColumn
+            // 
+            this.areaDataGridViewTextBoxColumn.DataPropertyName = "Area";
+            this.areaDataGridViewTextBoxColumn.HeaderText = "住宅区";
+            this.areaDataGridViewTextBoxColumn.Name = "areaDataGridViewTextBoxColumn";
+            this.areaDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // slotDataGridViewTextBoxColumn
+            // 
+            this.slotDataGridViewTextBoxColumn.DataPropertyName = "Slot";
+            this.slotDataGridViewTextBoxColumn.FillWeight = 40F;
+            this.slotDataGridViewTextBoxColumn.HeaderText = "区";
+            this.slotDataGridViewTextBoxColumn.Name = "slotDataGridViewTextBoxColumn";
+            this.slotDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // idDataGridViewTextBoxColumn
+            // 
+            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
+            this.idDataGridViewTextBoxColumn.FillWeight = 40F;
+            this.idDataGridViewTextBoxColumn.HeaderText = "号";
+            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
+            this.idDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // sizeDataGridViewTextBoxColumn
+            // 
+            this.sizeDataGridViewTextBoxColumn.DataPropertyName = "Size";
+            this.sizeDataGridViewTextBoxColumn.FillWeight = 60F;
+            this.sizeDataGridViewTextBoxColumn.HeaderText = "大小";
+            this.sizeDataGridViewTextBoxColumn.Name = "sizeDataGridViewTextBoxColumn";
+            this.sizeDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // priceDataGridViewTextBoxColumn
+            // 
+            this.priceDataGridViewTextBoxColumn.DataPropertyName = "Price";
+            this.priceDataGridViewTextBoxColumn.FillWeight = 80F;
+            this.priceDataGridViewTextBoxColumn.HeaderText = "价格";
+            this.priceDataGridViewTextBoxColumn.Name = "priceDataGridViewTextBoxColumn";
+            this.priceDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // addTimeDataGridViewTextBoxColumn
+            // 
+            this.addTimeDataGridViewTextBoxColumn.DataPropertyName = "AddTime";
+            this.addTimeDataGridViewTextBoxColumn.FillWeight = 150F;
+            this.addTimeDataGridViewTextBoxColumn.HeaderText = "首次记录时间";
+            this.addTimeDataGridViewTextBoxColumn.Name = "addTimeDataGridViewTextBoxColumn";
+            this.addTimeDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // existenceTimeDataGridViewTextBoxColumn
+            // 
+            this.existenceTimeDataGridViewTextBoxColumn.DataPropertyName = "ExistenceTime";
+            this.existenceTimeDataGridViewTextBoxColumn.FillWeight = 150F;
+            this.existenceTimeDataGridViewTextBoxColumn.HeaderText = "最后记录时间";
+            this.existenceTimeDataGridViewTextBoxColumn.Name = "existenceTimeDataGridViewTextBoxColumn";
+            this.existenceTimeDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // groupBoxUpload
             // 
@@ -129,9 +202,9 @@ namespace HousingCheck
             // groupBoxLog
             // 
             this.groupBoxLog.Controls.Add(this.textBoxLog);
-            this.groupBoxLog.Location = new System.Drawing.Point(563, 223);
+            this.groupBoxLog.Location = new System.Drawing.Point(563, 253);
             this.groupBoxLog.Name = "groupBoxLog";
-            this.groupBoxLog.Size = new System.Drawing.Size(320, 397);
+            this.groupBoxLog.Size = new System.Drawing.Size(320, 367);
             this.groupBoxLog.TabIndex = 2;
             this.groupBoxLog.TabStop = false;
             this.groupBoxLog.Text = "日志";
@@ -143,20 +216,48 @@ namespace HousingCheck
             this.textBoxLog.Name = "textBoxLog";
             this.textBoxLog.ReadOnly = true;
             this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxLog.Size = new System.Drawing.Size(307, 373);
+            this.textBoxLog.Size = new System.Drawing.Size(307, 343);
             this.textBoxLog.TabIndex = 0;
             // 
             // groupBoxControl
             // 
+            this.groupBoxControl.Controls.Add(this.numericUpDownTimeout);
+            this.groupBoxControl.Controls.Add(this.label1);
             this.groupBoxControl.Controls.Add(this.buttonCopyToClipboard);
             this.groupBoxControl.Controls.Add(this.buttonSaveToFile);
             this.groupBoxControl.Controls.Add(this.buttonUploadOnce);
             this.groupBoxControl.Location = new System.Drawing.Point(563, 162);
             this.groupBoxControl.Name = "groupBoxControl";
-            this.groupBoxControl.Size = new System.Drawing.Size(320, 55);
+            this.groupBoxControl.Size = new System.Drawing.Size(320, 85);
             this.groupBoxControl.TabIndex = 3;
             this.groupBoxControl.TabStop = false;
             this.groupBoxControl.Text = "操作";
+            // 
+            // numericUpDownTimeout
+            // 
+            this.numericUpDownTimeout.Location = new System.Drawing.Point(205, 56);
+            this.numericUpDownTimeout.Maximum = new decimal(new int[] {
+            1440,
+            0,
+            0,
+            0});
+            this.numericUpDownTimeout.Name = "numericUpDownTimeout";
+            this.numericUpDownTimeout.Size = new System.Drawing.Size(48, 21);
+            this.numericUpDownTimeout.TabIndex = 5;
+            this.numericUpDownTimeout.Value = new decimal(new int[] {
+            45,
+            0,
+            0,
+            0});
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 58);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(185, 12);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "最后记录早于此分钟数就不上报：";
             // 
             // buttonCopyToClipboard
             // 
@@ -251,12 +352,14 @@ namespace HousingCheck
             this.Size = new System.Drawing.Size(940, 858);
             this.groupBoxTable.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.housingCheckBindingSource)).EndInit();
             this.groupBoxUpload.ResumeLayout(false);
             this.groupBoxUpload.PerformLayout();
             this.groupBoxLog.ResumeLayout(false);
             this.groupBoxLog.PerformLayout();
             this.groupBoxControl.ResumeLayout(false);
+            this.groupBoxControl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTimeout)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.housingCheckBindingSource)).EndInit();
             this.groupBoxLimitMode.ResumeLayout(false);
             this.groupBoxLimitMode.PerformLayout();
             this.ResumeLayout(false);
@@ -266,7 +369,6 @@ namespace HousingCheck
         #endregion
 
         private System.Windows.Forms.GroupBox groupBoxTable;
-        private System.Windows.Forms.BindingSource housingCheckBindingSource;
         public System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.GroupBox groupBoxUpload;
         private System.Windows.Forms.CheckBox checkBoxUpload;
@@ -278,6 +380,16 @@ namespace HousingCheck
         public System.Windows.Forms.Button buttonCopyToClipboard;
         public System.Windows.Forms.Button buttonSaveToFile;
         public System.Windows.Forms.Button buttonUploadOnce;
+        public System.Windows.Forms.NumericUpDown numericUpDownTimeout;
+        private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.BindingSource housingCheckBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn areaDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn slotDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sizeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn addTimeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn existenceTimeDataGridViewTextBoxColumn;
         public System.Windows.Forms.CheckBox checkBoxLimitMode;
         public System.Windows.Forms.GroupBox groupBoxLimitMode;
         public System.Windows.Forms.CheckBox checkBoxDetailRecord;
