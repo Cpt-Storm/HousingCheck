@@ -15,8 +15,8 @@ using System.Net;
 using System.Threading;
 using System.ComponentModel;
 using System.Collections.Specialized;
-using System.Xml;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 
 public static class Extensions
 {
@@ -72,7 +72,11 @@ namespace HousingCheck
                 var networkReceivedDelegateType = typeof(NetworkReceivedDelegate);
                 var networkReceivedDelegate = Delegate.CreateDelegate(networkReceivedDelegateType, (object)this, "NetworkReceived", true);
                 subs.GetType().GetEvent("NetworkReceived").RemoveEventHandler(subs, networkReceivedDelegate);
-                OtterThread.CancelAsync();
+                OtterThread.CancelAsync(); 
+                if (control.checkBoxAutoSaveAndLoad.Checked == true)
+                {
+                    JsonSave();
+                }
                 control.SaveSettings();
                 statusLabel.Text = "Exit :|";
             }
@@ -108,11 +112,19 @@ namespace HousingCheck
             control.buttonUploadOnce.Click += ButtonUploadOnce_Click;
             control.buttonCopyToClipboard.Click += ButtonCopyToClipboard_Click;
             control.buttonSaveToFile.Click += ButtonSaveToFile_Click;
+            control.buttonJsonSave.Click += ButtonJsonSave_Click;
+            control.buttonJsonLoad.Click += ButtonJsonLoad_Click;
+            if (control.checkBoxAutoSaveAndLoad.Checked == true)
+            {
+                JsonLoad();
+            }
+            string tips = "本插件免费，发布及更新地址 https://file.bluefissure.com/FFXIV/ 或 https://bbs.nga.cn/read.php?tid=25465725 ，勿从其他渠道（闲鱼卖家或神秘群友）获取以避免虚拟财产受到损失。";
+            MessageBox.Show(tips);
+            Log("Info", tips);
 
             isLimitReleased = control.checkBoxLimitMode.Checked;
             control.buttonSaveDetailToFile.Click += ButtonSaveDetailToFile_Click;
         }
-
 
         void Log(string type, string message)
         {
@@ -128,6 +140,8 @@ namespace HousingCheck
         void NetworkReceived(string connection, long epoch, byte[] message)
         {
             var opcode = BitConverter.ToUInt16(message, 18);
+            if (opcode != 733 /*&& message.Length != 2440*/) return;
+            //Log("Debug", $"OPCODE:{opcode}");
             if (isLimitReleased)
             {
                 MoreDetailFlag = control.checkBoxDetailRecord.Checked;
@@ -185,6 +199,7 @@ namespace HousingCheck
                             HousingList[HousingList.IndexOf(housignItem)].ExistenceTime = DateTime.Now;     //更新时间
                             HousingList[HousingList.IndexOf(housignItem)].Price = price;                    //更新价格
                             Log("Info", "重复土地，已更新。");
+                            control.dataGridView1.Refresh();                                                //刷新控件
                         }
                         if (size == "M" || size == "L")
                         {
@@ -352,6 +367,15 @@ namespace HousingCheck
             //Log("Debug", fileName);
         }
 
+        private void ButtonJsonSave_Click(object sender, EventArgs e)
+        {
+            JsonSave();
+        }
+        private void ButtonJsonLoad_Click(object sender, EventArgs e)
+        {
+            JsonLoad();
+        }
+
         private string ListToString()
         {
             ArrayList area = new ArrayList(new string[] { "海雾村", "薰衣草苗圃", "高脚孤丘", "白银乡" });
@@ -359,8 +383,8 @@ namespace HousingCheck
             
             foreach (var line in HousingList)
             {
-                bool isExistence = DateTime.Compare(line.ExistenceTime.AddMinutes((double)control.numericUpDownTimeout.Value), DateTime.Now) <= 0;
-                if (isExistence && control.numericUpDownTimeout.Value != 0)
+                bool isTimedout = DateTime.Compare(line.ExistenceTime.AddMinutes((double)control.numericUpDownTimeout.Value), DateTime.Now) <= 0;
+                if (isTimedout && control.numericUpDownTimeout.Value != 0)
                 {
                     continue;
                 }
@@ -392,6 +416,41 @@ namespace HousingCheck
             return stringBuilder.ToString();
         }
 
+        private void JsonSave()
+        {
+            HousingList.OrderBy(HousingList => HousingList.Area).ThenBy(HousingList => HousingList.Slot).ThenBy(HousingList => HousingList.Id);
+
+            using (StreamWriter file = File.CreateText(control.ItemsFile))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, HousingList);
+                Log("Info", $"列表已保存");
+            }
+        }
+
+        private void JsonLoad()
+        {
+            if (File.Exists(control.ItemsFile))
+            {
+                string s = File.ReadAllText(control.ItemsFile);
+                ObservableCollection<HousingItem> TempList = new ObservableCollection<HousingItem>();
+                TempList = JsonConvert.DeserializeObject<ObservableCollection<HousingItem>>(s);
+                foreach (var item in TempList)
+                {
+                    if (HousingList.IndexOf(item) == -1)
+                    {
+                        bindingSource1.Add(item);
+                    }
+                    //Log("Debug", $"{item.AddTime}");
+                }
+                Log("Info", $"列表已加载");
+            }
+            else
+            {
+                Log("Info", $"{control.ItemsFile}不存在");
+            }
+        }
+
         private void ButtonSaveDetailToFile_Click(object sender, EventArgs e)
         {
             Log("Info", "数据提取中……");
@@ -417,8 +476,7 @@ namespace HousingCheck
             Log("Info", $"已保存到{Environment.CurrentDirectory}, {fileName}");
 
         }
-
-
+        
         private void OtterUpload(object sender, DoWorkEventArgs e)
         {
             while (true)
