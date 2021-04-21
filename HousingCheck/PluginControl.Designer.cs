@@ -30,10 +30,17 @@ namespace HousingCheck
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.groupBoxTable = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.areaDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.slotDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sizeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.addTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.existenceTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBoxUpload = new System.Windows.Forms.GroupBox();
             this.checkBoxML = new System.Windows.Forms.CheckBox();
             this.textBoxUpload = new System.Windows.Forms.TextBox();
@@ -50,18 +57,24 @@ namespace HousingCheck
             this.buttonSaveToFile = new System.Windows.Forms.Button();
             this.buttonUploadOnce = new System.Windows.Forms.Button();
             this.housingCheckBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.areaDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.slotDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.sizeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.addTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.existenceTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.checkBoxLimitMode = new System.Windows.Forms.CheckBox();
             this.groupBoxLimitMode = new System.Windows.Forms.GroupBox();
             this.checkBoxDetailRecord = new System.Windows.Forms.CheckBox();
-            this.buttonSaveDetailToFile = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.buttonSaveDetailToFile = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.labelCurrentListCount = new System.Windows.Forms.Label();
+            this.labelCurrentCacheTime = new System.Windows.Forms.Label();
+            this.textBoxCompare = new System.Windows.Forms.TextBox();
+            this.buttonClearItemList = new System.Windows.Forms.Button();
+            this.buttonCompare = new System.Windows.Forms.Button();
+            this.buttonReadCache = new System.Windows.Forms.Button();
+            this.buttonSaveCache = new System.Windows.Forms.Button();
+            this.buttonCacheItemList = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.buttondump = new System.Windows.Forms.Button();
+            this.buttonRestoreListFromCache = new System.Windows.Forms.Button();
             this.groupBoxTable.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBoxUpload.SuspendLayout();
@@ -70,6 +83,7 @@ namespace HousingCheck
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.housingCheckBindingSource)).BeginInit();
             this.groupBoxLimitMode.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxTable
@@ -103,6 +117,68 @@ namespace HousingCheck
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(569, 578);
             this.dataGridView1.TabIndex = 0;
+            // 
+            // areaDataGridViewTextBoxColumn
+            // 
+            this.areaDataGridViewTextBoxColumn.DataPropertyName = "Area";
+            this.areaDataGridViewTextBoxColumn.FillWeight = 90F;
+            this.areaDataGridViewTextBoxColumn.HeaderText = "住宅区";
+            this.areaDataGridViewTextBoxColumn.Name = "areaDataGridViewTextBoxColumn";
+            this.areaDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // slotDataGridViewTextBoxColumn
+            // 
+            this.slotDataGridViewTextBoxColumn.DataPropertyName = "Slot";
+            this.slotDataGridViewTextBoxColumn.FillWeight = 30F;
+            this.slotDataGridViewTextBoxColumn.HeaderText = "区";
+            this.slotDataGridViewTextBoxColumn.Name = "slotDataGridViewTextBoxColumn";
+            this.slotDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // idDataGridViewTextBoxColumn
+            // 
+            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
+            this.idDataGridViewTextBoxColumn.FillWeight = 30F;
+            this.idDataGridViewTextBoxColumn.HeaderText = "号";
+            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
+            this.idDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // sizeDataGridViewTextBoxColumn
+            // 
+            this.sizeDataGridViewTextBoxColumn.DataPropertyName = "Size";
+            this.sizeDataGridViewTextBoxColumn.FillWeight = 40F;
+            this.sizeDataGridViewTextBoxColumn.HeaderText = "大小";
+            this.sizeDataGridViewTextBoxColumn.Name = "sizeDataGridViewTextBoxColumn";
+            this.sizeDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // priceDataGridViewTextBoxColumn
+            // 
+            this.priceDataGridViewTextBoxColumn.DataPropertyName = "Price";
+            this.priceDataGridViewTextBoxColumn.FillWeight = 85F;
+            this.priceDataGridViewTextBoxColumn.HeaderText = "价格";
+            this.priceDataGridViewTextBoxColumn.Name = "priceDataGridViewTextBoxColumn";
+            this.priceDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // addTimeDataGridViewTextBoxColumn
+            // 
+            this.addTimeDataGridViewTextBoxColumn.DataPropertyName = "AddTime";
+            dataGridViewCellStyle3.Format = "G";
+            dataGridViewCellStyle3.NullValue = null;
+            this.addTimeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.addTimeDataGridViewTextBoxColumn.FillWeight = 190F;
+            this.addTimeDataGridViewTextBoxColumn.HeaderText = "首次记录时间";
+            this.addTimeDataGridViewTextBoxColumn.Name = "addTimeDataGridViewTextBoxColumn";
+            this.addTimeDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // existenceTimeDataGridViewTextBoxColumn
+            // 
+            this.existenceTimeDataGridViewTextBoxColumn.DataPropertyName = "ExistenceTime";
+            dataGridViewCellStyle4.Format = "G";
+            dataGridViewCellStyle4.NullValue = null;
+            this.existenceTimeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            this.existenceTimeDataGridViewTextBoxColumn.FillWeight = 190F;
+            this.existenceTimeDataGridViewTextBoxColumn.HeaderText = "最后记录时间";
+            this.existenceTimeDataGridViewTextBoxColumn.Name = "existenceTimeDataGridViewTextBoxColumn";
+            this.existenceTimeDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // groupBoxUpload
             // 
@@ -147,7 +223,7 @@ namespace HousingCheck
             this.checkBoxUpload.TabIndex = 0;
             this.checkBoxUpload.Text = "开启自动上报";
             this.checkBoxUpload.UseVisualStyleBackColor = true;
-            this.checkBoxUpload.CheckedChanged += new System.EventHandler(this.checkBoxUpload_CheckedChanged);
+            this.checkBoxUpload.CheckedChanged += new System.EventHandler(this.CheckBoxUpload_CheckedChanged);
             // 
             // groupBoxLog
             // 
@@ -269,68 +345,6 @@ namespace HousingCheck
             this.buttonUploadOnce.Text = "手动上报一次";
             this.buttonUploadOnce.UseVisualStyleBackColor = true;
             // 
-            // areaDataGridViewTextBoxColumn
-            // 
-            this.areaDataGridViewTextBoxColumn.DataPropertyName = "Area";
-            this.areaDataGridViewTextBoxColumn.FillWeight = 90F;
-            this.areaDataGridViewTextBoxColumn.HeaderText = "住宅区";
-            this.areaDataGridViewTextBoxColumn.Name = "areaDataGridViewTextBoxColumn";
-            this.areaDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // slotDataGridViewTextBoxColumn
-            // 
-            this.slotDataGridViewTextBoxColumn.DataPropertyName = "Slot";
-            this.slotDataGridViewTextBoxColumn.FillWeight = 30F;
-            this.slotDataGridViewTextBoxColumn.HeaderText = "区";
-            this.slotDataGridViewTextBoxColumn.Name = "slotDataGridViewTextBoxColumn";
-            this.slotDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // idDataGridViewTextBoxColumn
-            // 
-            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
-            this.idDataGridViewTextBoxColumn.FillWeight = 30F;
-            this.idDataGridViewTextBoxColumn.HeaderText = "号";
-            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
-            this.idDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // sizeDataGridViewTextBoxColumn
-            // 
-            this.sizeDataGridViewTextBoxColumn.DataPropertyName = "Size";
-            this.sizeDataGridViewTextBoxColumn.FillWeight = 40F;
-            this.sizeDataGridViewTextBoxColumn.HeaderText = "大小";
-            this.sizeDataGridViewTextBoxColumn.Name = "sizeDataGridViewTextBoxColumn";
-            this.sizeDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // priceDataGridViewTextBoxColumn
-            // 
-            this.priceDataGridViewTextBoxColumn.DataPropertyName = "Price";
-            this.priceDataGridViewTextBoxColumn.FillWeight = 85F;
-            this.priceDataGridViewTextBoxColumn.HeaderText = "价格";
-            this.priceDataGridViewTextBoxColumn.Name = "priceDataGridViewTextBoxColumn";
-            this.priceDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // addTimeDataGridViewTextBoxColumn
-            // 
-            this.addTimeDataGridViewTextBoxColumn.DataPropertyName = "AddTime";
-            dataGridViewCellStyle9.Format = "G";
-            dataGridViewCellStyle9.NullValue = null;
-            this.addTimeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle9;
-            this.addTimeDataGridViewTextBoxColumn.FillWeight = 190F;
-            this.addTimeDataGridViewTextBoxColumn.HeaderText = "首次记录时间";
-            this.addTimeDataGridViewTextBoxColumn.Name = "addTimeDataGridViewTextBoxColumn";
-            this.addTimeDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // existenceTimeDataGridViewTextBoxColumn
-            // 
-            this.existenceTimeDataGridViewTextBoxColumn.DataPropertyName = "ExistenceTime";
-            dataGridViewCellStyle10.Format = "G";
-            dataGridViewCellStyle10.NullValue = null;
-            this.existenceTimeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
-            this.existenceTimeDataGridViewTextBoxColumn.FillWeight = 190F;
-            this.existenceTimeDataGridViewTextBoxColumn.HeaderText = "最后记录时间";
-            this.existenceTimeDataGridViewTextBoxColumn.Name = "existenceTimeDataGridViewTextBoxColumn";
-            this.existenceTimeDataGridViewTextBoxColumn.ReadOnly = true;
-            //
             // checkBoxLimitMode
             // 
             this.checkBoxLimitMode.AutoSize = true;
@@ -340,7 +354,7 @@ namespace HousingCheck
             this.checkBoxLimitMode.TabIndex = 3;
             this.checkBoxLimitMode.Text = "开启隐藏模式";
             this.checkBoxLimitMode.UseVisualStyleBackColor = true;
-            this.checkBoxLimitMode.CheckedChanged += new System.EventHandler(this.checkBoxLimitMode_CheckedChanged);
+            this.checkBoxLimitMode.CheckedChanged += new System.EventHandler(this.CheckBoxLimitMode_CheckedChanged);
             // 
             // groupBoxLimitMode
             // 
@@ -348,9 +362,9 @@ namespace HousingCheck
             this.groupBoxLimitMode.Controls.Add(this.button1);
             this.groupBoxLimitMode.Controls.Add(this.buttonSaveDetailToFile);
             this.groupBoxLimitMode.Controls.Add(this.checkBoxLimitMode);
-            this.groupBoxLimitMode.Location = new System.Drawing.Point(562, 621);
+            this.groupBoxLimitMode.Location = new System.Drawing.Point(601, 626);
             this.groupBoxLimitMode.Name = "groupBoxLimitMode";
-            this.groupBoxLimitMode.Size = new System.Drawing.Size(321, 96);
+            this.groupBoxLimitMode.Size = new System.Drawing.Size(322, 96);
             this.groupBoxLimitMode.TabIndex = 4;
             this.groupBoxLimitMode.TabStop = false;
             this.groupBoxLimitMode.Text = "隐藏模式";
@@ -366,15 +380,6 @@ namespace HousingCheck
             this.checkBoxDetailRecord.Text = "记录详情";
             this.checkBoxDetailRecord.UseVisualStyleBackColor = true;
             // 
-            // buttonSaveDetailToFile
-            // 
-            this.buttonSaveDetailToFile.Location = new System.Drawing.Point(205, 16);
-            this.buttonSaveDetailToFile.Name = "buttonSaveDetailToFile";
-            this.buttonSaveDetailToFile.Size = new System.Drawing.Size(98, 23);
-            this.buttonSaveDetailToFile.TabIndex = 0;
-            this.buttonSaveDetailToFile.Text = "保存到文件";
-            this.buttonSaveDetailToFile.UseVisualStyleBackColor = true;
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(205, 45);
@@ -384,12 +389,143 @@ namespace HousingCheck
             this.button1.Text = "保存简要信息";
             this.button1.UseVisualStyleBackColor = true;
             // 
+            // buttonSaveDetailToFile
+            // 
+            this.buttonSaveDetailToFile.Location = new System.Drawing.Point(205, 16);
+            this.buttonSaveDetailToFile.Name = "buttonSaveDetailToFile";
+            this.buttonSaveDetailToFile.Size = new System.Drawing.Size(98, 23);
+            this.buttonSaveDetailToFile.TabIndex = 0;
+            this.buttonSaveDetailToFile.Text = "保存到文件";
+            this.buttonSaveDetailToFile.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.labelCurrentListCount);
+            this.groupBox1.Controls.Add(this.labelCurrentCacheTime);
+            this.groupBox1.Controls.Add(this.textBoxCompare);
+            this.groupBox1.Controls.Add(this.buttonClearItemList);
+            this.groupBox1.Controls.Add(this.buttonCompare);
+            this.groupBox1.Controls.Add(this.buttonReadCache);
+            this.groupBox1.Controls.Add(this.buttonSaveCache);
+            this.groupBox1.Controls.Add(this.buttonRestoreListFromCache);
+            this.groupBox1.Controls.Add(this.buttonCacheItemList);
+            this.groupBox1.Location = new System.Drawing.Point(13, 626);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(582, 155);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "变更比对";
+            // 
+            // labelCurrentListCount
+            // 
+            this.labelCurrentListCount.AutoSize = true;
+            this.labelCurrentListCount.Location = new System.Drawing.Point(376, 73);
+            this.labelCurrentListCount.Name = "labelCurrentListCount";
+            this.labelCurrentListCount.Size = new System.Drawing.Size(125, 12);
+            this.labelCurrentListCount.TabIndex = 6;
+            this.labelCurrentListCount.Text = "当前房屋列表：0/5760";
+            // 
+            // labelCurrentCacheTime
+            // 
+            this.labelCurrentCacheTime.AutoSize = true;
+            this.labelCurrentCacheTime.Location = new System.Drawing.Point(376, 95);
+            this.labelCurrentCacheTime.Name = "labelCurrentCacheTime";
+            this.labelCurrentCacheTime.Size = new System.Drawing.Size(101, 12);
+            this.labelCurrentCacheTime.TabIndex = 6;
+            this.labelCurrentCacheTime.Text = "当前缓存版本：无";
+            // 
+            // textBoxCompare
+            // 
+            this.textBoxCompare.Location = new System.Drawing.Point(7, 16);
+            this.textBoxCompare.Multiline = true;
+            this.textBoxCompare.Name = "textBoxCompare";
+            this.textBoxCompare.ReadOnly = true;
+            this.textBoxCompare.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxCompare.Size = new System.Drawing.Size(363, 124);
+            this.textBoxCompare.TabIndex = 0;
+            // 
+            // buttonClearItemList
+            // 
+            this.buttonClearItemList.Location = new System.Drawing.Point(479, 117);
+            this.buttonClearItemList.Name = "buttonClearItemList";
+            this.buttonClearItemList.Size = new System.Drawing.Size(97, 23);
+            this.buttonClearItemList.TabIndex = 6;
+            this.buttonClearItemList.Text = "清空房屋列表";
+            this.buttonClearItemList.UseVisualStyleBackColor = true;
+            // 
+            // buttonCompare
+            // 
+            this.buttonCompare.Location = new System.Drawing.Point(376, 117);
+            this.buttonCompare.Name = "buttonCompare";
+            this.buttonCompare.Size = new System.Drawing.Size(97, 23);
+            this.buttonCompare.TabIndex = 6;
+            this.buttonCompare.Text = "比对房屋变化";
+            this.buttonCompare.UseVisualStyleBackColor = true;
+            // 
+            // buttonReadCache
+            // 
+            this.buttonReadCache.Location = new System.Drawing.Point(376, 43);
+            this.buttonReadCache.Name = "buttonReadCache";
+            this.buttonReadCache.Size = new System.Drawing.Size(97, 23);
+            this.buttonReadCache.TabIndex = 6;
+            this.buttonReadCache.Text = "读取缓存文件";
+            this.buttonReadCache.UseVisualStyleBackColor = true;
+            // 
+            // buttonSaveCache
+            // 
+            this.buttonSaveCache.Location = new System.Drawing.Point(479, 43);
+            this.buttonSaveCache.Name = "buttonSaveCache";
+            this.buttonSaveCache.Size = new System.Drawing.Size(97, 23);
+            this.buttonSaveCache.TabIndex = 6;
+            this.buttonSaveCache.Text = "保存缓存文件";
+            this.buttonSaveCache.UseVisualStyleBackColor = true;
+            // 
+            // buttonCacheItemList
+            // 
+            this.buttonCacheItemList.Location = new System.Drawing.Point(376, 16);
+            this.buttonCacheItemList.Name = "buttonCacheItemList";
+            this.buttonCacheItemList.Size = new System.Drawing.Size(97, 23);
+            this.buttonCacheItemList.TabIndex = 6;
+            this.buttonCacheItemList.Text = "保存列表至缓存";
+            this.buttonCacheItemList.UseVisualStyleBackColor = true;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.Filter = "数据文件|*.json";
+            this.openFileDialog1.Title = "读取缓存文件";
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.DefaultExt = "json";
+            this.saveFileDialog1.Filter = "数据文件|*.json";
+            this.saveFileDialog1.Title = "保存缓存文件";
+            // 
+            // buttondump
+            // 
+            this.buttondump.Location = new System.Drawing.Point(492, 787);
+            this.buttondump.Name = "buttondump";
+            this.buttondump.Size = new System.Drawing.Size(97, 23);
+            this.buttondump.TabIndex = 6;
+            this.buttondump.Text = "dump";
+            this.buttondump.UseVisualStyleBackColor = true;
+            this.buttondump.Visible = false;
+            // 
+            // buttonRestoreListFromCache
+            // 
+            this.buttonRestoreListFromCache.Location = new System.Drawing.Point(479, 16);
+            this.buttonRestoreListFromCache.Name = "buttonRestoreListFromCache";
+            this.buttonRestoreListFromCache.Size = new System.Drawing.Size(97, 23);
+            this.buttonRestoreListFromCache.TabIndex = 6;
+            this.buttonRestoreListFromCache.Text = "缓存推送进列表";
+            this.buttonRestoreListFromCache.UseVisualStyleBackColor = true;
+            // 
             // PluginControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBoxLimitMode);
             this.Controls.Add(this.groupBoxControl);
+            this.Controls.Add(this.buttondump);
             this.Controls.Add(this.groupBoxLog);
             this.Controls.Add(this.groupBoxUpload);
             this.Controls.Add(this.groupBoxTable);
@@ -407,6 +543,8 @@ namespace HousingCheck
             ((System.ComponentModel.ISupportInitialize)(this.housingCheckBindingSource)).EndInit();
             this.groupBoxLimitMode.ResumeLayout(false);
             this.groupBoxLimitMode.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -443,5 +581,18 @@ namespace HousingCheck
         public System.Windows.Forms.CheckBox checkBoxDetailRecord;
         public System.Windows.Forms.Button buttonSaveDetailToFile;
         public System.Windows.Forms.Button button1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        public System.Windows.Forms.TextBox textBoxCompare;
+        public System.Windows.Forms.OpenFileDialog openFileDialog1;
+        public System.Windows.Forms.Label labelCurrentListCount;
+        public System.Windows.Forms.Button buttondump;
+        public System.Windows.Forms.Button buttonCacheItemList;
+        public System.Windows.Forms.Label labelCurrentCacheTime;
+        public System.Windows.Forms.Button buttonClearItemList;
+        public System.Windows.Forms.Button buttonReadCache;
+        public System.Windows.Forms.Button buttonSaveCache;
+        public System.Windows.Forms.Button buttonCompare;
+        public System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        public System.Windows.Forms.Button buttonRestoreListFromCache;
     }
 }

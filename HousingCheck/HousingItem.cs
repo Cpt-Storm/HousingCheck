@@ -220,4 +220,48 @@ namespace HousingCheck
             }
         }
     }
+
+    public class HousingItemLite : IEquatable<HousingItemLite>
+    {
+        public HousingItemLite(string _area, int _slot, int _id, string _size, string _name)
+        {
+            Area = _area;
+            Slot = _slot;
+            Id = _id;
+            Size = _size;
+            Name = _name;
+            AddTime = DateTime.Now;
+        }
+
+        [DisplayName("住宅区")]
+        public string Area { get; set; }
+        [DisplayName("区")]
+        public int Slot { get; set; }
+        [DisplayName("号")]
+        public int Id { get; set; }
+        [DisplayName("大小")]
+        public string Size { get; set; }
+        [DisplayName("名称")]
+        public string Name { get; set; }
+        [DisplayName("首次记录时间")]
+        public DateTime AddTime { get; set; }
+
+
+        public bool Equals(HousingItemLite obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return (obj.Area == Area
+                        && obj.Slot == Slot
+                        && obj.Id == Id);
+        }
+    }
+
 }

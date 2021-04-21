@@ -18,6 +18,7 @@ namespace HousingCheck
 
         public static readonly string SettingsFile = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config\\HousingCheck.config.xml");
         public readonly string ItemsFile = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config\\HousingCheck.item.json");
+        //public readonly string CacheFile = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config\\HousingCheck.cache.json");
         public bool upload;
         public PluginControl()
         {
@@ -25,7 +26,7 @@ namespace HousingCheck
             //numericUpDownTimeout.Location = new Point(label1.Location.X + label1.Width, numericUpDownTimeout.Location.Y);
         }
 
-        private void checkBoxUpload_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxUpload_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
             upload = checkBox.Checked;
@@ -70,7 +71,7 @@ namespace HousingCheck
             xWriter.Close();
         }
 
-        private void checkBoxLimitMode_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxLimitMode_CheckedChanged(object sender, EventArgs e)
         {
             groupBoxLimitMode.Visible = checkBoxLimitMode.Checked;
         }

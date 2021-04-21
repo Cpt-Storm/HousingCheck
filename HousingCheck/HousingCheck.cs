@@ -35,6 +35,11 @@ namespace HousingCheck
     {
         public ObservableCollection<HousingItem> HousingList = new ObservableCollection<HousingItem>();
         public ObservableCollection<HousingItemEX> HousingListEX = new ObservableCollection<HousingItemEX>();
+        public ObservableCollection<HousingItemLite> HousingListLite = new ObservableCollection<HousingItemLite>();
+        public ObservableCollection<HousingItemLite> lites = new ObservableCollection<HousingItemLite>();               //中转存储
+        public ObservableCollection<HousingItemLite> ListCache = new ObservableCollection<HousingItemLite>();
+        public DateTime CacheCreateTime;
+        public int dataCount;
         public BindingSource bindingSource1;
         FFXIV_ACT_Plugin.FFXIV_ACT_Plugin ffxivPlugin;
         bool initialized = false;
@@ -43,9 +48,10 @@ namespace HousingCheck
         private BackgroundWorker OtterThread;
         Label statusLabel;
         PluginControl control;
-        
-        char[] charsToTrim = { '\0', '\r', '\n', ' ' };
-        Regex regex = new Regex("(\0|\a|\b|\t|\n|\v|\f|\r|[\x01-\x1F])");
+        readonly string[] houseID_List = new string[] { "海雾村1", "海雾村2", "海雾村4", "海雾村5", "海雾村6", "海雾村7", "海雾村14", "海雾村15", "海雾村29", "海雾村30", "海雾村31", "海雾村32", "海雾村34", "海雾村35", "海雾村36", "海雾村37", "海雾村44", "海雾村45", "海雾村59", "海雾村60", "薰衣草苗圃1", "薰衣草苗圃3", "薰衣草苗圃5", "薰衣草苗圃6", "薰衣草苗圃11", "薰衣草苗圃16", "薰衣草苗圃21", "薰衣草苗圃27", "薰衣草苗圃28", "薰衣草苗圃30", "薰衣草苗圃31", "薰衣草苗圃33", "薰衣草苗圃35", "薰衣草苗圃36", "薰衣草苗圃41", "薰衣草苗圃46", "薰衣草苗圃51", "薰衣草苗圃57", "薰衣草苗圃58", "薰衣草苗圃60", "高脚孤丘4", "高脚孤丘5", "高脚孤丘6", "高脚孤丘8", "高脚孤丘11", "高脚孤丘12", "高脚孤丘13", "高脚孤丘19", "高脚孤丘25", "高脚孤丘30", "高脚孤丘34", "高脚孤丘35", "高脚孤丘36", "高脚孤丘38", "高脚孤丘41", "高脚孤丘42", "高脚孤丘43", "高脚孤丘49", "高脚孤丘55", "高脚孤丘60", "白银乡1", "白银乡7", "白银乡8", "白银乡13", "白银乡15", "白银乡16", "白银乡19", "白银乡24", "白银乡28", "白银乡30", "白银乡31", "白银乡37", "白银乡38", "白银乡43", "白银乡45", "白银乡46", "白银乡49", "白银乡54", "白银乡58", "白银乡60" };
+        readonly string[] teleportList = new string[] { "直接跑过去", "海雾村西北区", "海雾村南区码头", "海雾村南区码头", "海雾村南区码头", "海雾村南区码头", "海雾村东北区", "海雾村东北区", "海雾村东南区", "海雾村东南区", "[扩建区]雾门广场", "[扩建区]海雾村东北区", "[扩建区]海雾村西北区码头", "[扩建区]海雾村西北区码头", "[扩建区]海雾村西北区码头", "[扩建区]海雾村西北区码头", "[扩建区]海雾村东南区", "[扩建区]海雾村东南区", "[扩建区]海雾村西南区", "[扩建区]海雾村西南区", "薰衣草苗圃东区", "树冠商店街（住宅管理人）", "薰衣草苗圃东区", "薰衣草苗圃东区", "直接游过去比较快", "薰衣草苗圃西南区", "芳草商店街", "薰衣草苗圃西北区", "薰衣草苗圃西北区", "树冠商店街（住宅管理人）", "[扩建区] 薰衣草苗圃南区", "[扩建区]树冠商店街（住宅管理人）", "[扩建区] 薰衣草苗圃南区", "[扩建区] 薰衣草苗圃南区", "[扩建区]薰衣草苗圃西南区", "[扩建区]薰衣草苗圃西北区", "[扩建区]芳草商店街", "[扩建区] 薰衣草苗圃东北区", "[扩建区] 薰衣草苗圃东北区", "[扩建区]树冠商店街（住宅管理人）", "高脚市场（住宅管理人）", "高脚孤丘西区", "高脚孤丘西区", "高脚孤丘西区", "娜娜莫大风车", "娜娜莫大风车", "娜娜莫大风车", "雄心广场", "高脚孤丘东区", "高脚孤丘东南区", "[扩建区]高脚市场（住宅管理人）", "[扩建区]高脚孤丘北区", "[扩建区]高脚孤丘北区", "[扩建区]高脚孤丘北区", "[扩建区]娜娜莫大风车", "[扩建区]娜娜莫大风车", "[扩建区]娜娜莫大风车", "[扩建区]雄心广场", "[扩建区]高脚孤丘南区", "[扩建区]高脚孤丘西南区", "白银乡南区", "白银乡东南区", "白银乡东南区", "白银乡东北区", "白银乡东北区", "白银乡东北区", "建议直接跑过去", "白银乡西区", "白银乡西北区", "白银乡西北区", "[扩建区]白银乡西区", "[扩建区]白银乡西南区", "[扩建区]白银乡西南区", "[扩建区]白银乡南区", "[扩建区]白银乡南区", "[扩建区]白银乡南区", "[扩建区]茜云栈桥（住宅管理人）", "[扩建区]白银乡东北区", "[扩建区]白银乡东区", "[扩建区]白银乡东区" };
+        readonly char[] charsToTrim = { '\0', '\r', '\n', ' ' };
+        readonly Regex regex = new Regex("(\0|\a|\b|\t|\n|\v|\f|\r|[\x01-\x1F])");
         bool isLimitReleased = false;
         bool MoreDetailFlag = false;
 
@@ -114,6 +120,15 @@ namespace HousingCheck
             control.buttonSaveToFile.Click += ButtonSaveToFile_Click;
             control.buttonJsonSave.Click += ButtonJsonSave_Click;
             control.buttonJsonLoad.Click += ButtonJsonLoad_Click;
+            control.buttonCacheItemList.Click += ButtonCacheItemList_Click;
+            control.buttonRestoreListFromCache.Click += ButtonRestoreListFromCache_Click;
+            control.buttonClearItemList.Click += ButtonClearItemList_Click;
+            control.buttonCompare.Click += ButtonCompare_Click;
+            control.buttonSaveCache.Click += ButtonSaveCache_Click;
+            control.buttonReadCache.Click += ButtonReadCache_Click;
+
+            control.buttondump.Click += Buttondump_Click;
+
             if (control.checkBoxAutoSaveAndLoad.Checked == true)
             {
                 JsonLoad();
@@ -124,6 +139,31 @@ namespace HousingCheck
 
             isLimitReleased = control.checkBoxLimitMode.Checked;
             control.buttonSaveDetailToFile.Click += ButtonSaveDetailToFile_Click;
+        }
+
+        private void Buttondump_Click(object sender, EventArgs e)
+        {
+            foreach (var item in HousingListLite)
+            {
+                if (item != null)
+                {
+                    lites.Add(item);
+                }
+            }
+            var list = lites.OrderBy(lites => lites.Area).ThenBy(lites => lites.Slot).ThenBy(lites => lites.Id).ToList();
+            HousingListLite.Clear();
+            foreach (var item in list)
+            {
+                HousingListLite.Add(item);
+            }
+            using (StreamWriter file = File.CreateText(Path.Combine(Environment.CurrentDirectory, "dump.json")))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, HousingListLite);
+                Log("Debug", $"Lite列表已保存");
+            }
+            dataCount = HousingListLite.Count;
+            control.labelCurrentListCount.Text = $"当前房屋列表：{dataCount}/5760 （{((float)dataCount/5760):P}）";
         }
 
         void Log(string type, string message)
@@ -140,7 +180,7 @@ namespace HousingCheck
         void NetworkReceived(string connection, long epoch, byte[] message)
         {
             var opcode = BitConverter.ToUInt16(message, 18);
-            if (opcode != 733 /*&& message.Length != 2440*/) return;
+            //if (opcode != 733 /*&& message.Length != 2440*/) return;
             //Log("Debug", $"OPCODE:{opcode}");
             if (isLimitReleased)
             {
@@ -150,7 +190,7 @@ namespace HousingCheck
             //{
             //    //Log("Info", $"opcode:{opcode}");
             //}
-            if (opcode == 941)
+            if (opcode == 733)
             {
                 var data_list = message.SubArray(32, message.Length - 32);
                 var data_header = data_list.SubArray(0, 8);
@@ -182,6 +222,13 @@ namespace HousingCheck
                                 size,
                                 price
                             );
+                        var housingItemLite = new HousingItemLite(
+                            area,
+                            slot + 1,
+                            house_id + 1,
+                            size,
+                            price.ToString()
+                            );
                         if (HousingList.IndexOf(housignItem) == -1)
                         {
                             bindingSource1.Add(housignItem);
@@ -203,6 +250,8 @@ namespace HousingCheck
                         }
                         if (size == "M" || size == "L")
                         {
+                            string teleport = teleportList[Array.IndexOf(houseID_List, $"{area}{house_id + 1}")];
+                            OtterText = "[CQ:at,qq=all]" + "传送区域推荐：" + teleport + Environment.NewLine;
                             Console.Beep(3000, 1000);
                         }
                         if (control.upload)
@@ -213,13 +262,52 @@ namespace HousingCheck
                                 OtterUploadFlag = true;
                             }
                         }
+                        if (HousingListLite.IndexOf(housingItemLite) == -1)
+                        {
+                            HousingListLite.Add(housingItemLite);
+                        }
+                        else
+                        {
+                            HousingListLite[HousingListLite.IndexOf(housingItemLite)].Name = price.ToString();
+                            HousingListLite[HousingListLite.IndexOf(housingItemLite)].AddTime = DateTime.Now;     //更新时间
+                        }
+                    }
+                    else
+                    {
+                        string name = Encoding.UTF8.GetString(name_array).Trim(charsToTrim);
+                        int flag = name_header[4];
+                        bool is_fc = (flag & 0b10000) > 0;
+                        if (is_fc)
+                        {
+                            name = "《" + name + "》";
+                        }
+                        var housingItemLite = new HousingItemLite(
+                            area,
+                            slot + 1,
+                            house_id + 1,
+                            size,
+                            name
+                            );
+                        if (HousingListLite.IndexOf(housingItemLite) == -1)
+                        {
+                            HousingListLite.Add(housingItemLite);
+                        }
+                        else
+                        {
+                            HousingListLite[HousingListLite.IndexOf(housingItemLite)].Name = name;
+                            HousingListLite[HousingListLite.IndexOf(housingItemLite)].AddTime = DateTime.Now;
+                        }
                     }
                 }
                 Log("Info", $"查询第{slot + 1}区");     //输出翻页日志
-
+                dataCount = HousingListLite.Count;
+                control.labelCurrentListCount.Text = $"当前房屋列表：{dataCount}/5760 （{((float)dataCount/5760):P}）";
+                return;
             }
 
-            if (opcode == 620)      //住房资料页面
+            #region 额外信息获取
+
+            if (opcode == 586)      //住房资料页面
             {
                 if (!MoreDetailFlag)
                 {
@@ -282,9 +370,10 @@ namespace HousingCheck
                         Log("Info", $"查询{areaName}第{slot + 1}区{houseID + 1}号房，个人房，记录已存在");     //输出翻页日志
                     }
                 }
+                return;
             }
 
-            if (opcode == 816)      //部队信息页面
+            if (opcode == 170)      //部队信息页面
             {
                 if (!MoreDetailFlag)
                 {
@@ -339,7 +428,10 @@ namespace HousingCheck
                 //    fcName
                 //    );
                 //Log("Info", $"已保存到{Environment.CurrentDirectory}, {fileName}");
+                return;
             }
+
+            #endregion
 
         }
 
@@ -375,6 +467,208 @@ namespace HousingCheck
         {
             JsonLoad();
         }
+
+        private void ButtonCacheItemList_Click(object sender, EventArgs e)
+        {
+            Log("Info", "缓存中……");
+            lites.Clear();
+            foreach (var item in HousingListLite)
+            {
+                if (item != null)
+                {
+                    lites.Add(item);
+                }
+            }
+            var list = lites.OrderBy(lites => lites.Area).ThenBy(lites => lites.Slot).ThenBy(lites => lites.Id).ToList();
+            HousingListLite.Clear();
+            foreach (var item in list)
+            {
+                HousingListLite.Add(item);
+            }
+            dataCount = HousingListLite.Count;
+            control.labelCurrentListCount.Text = $"当前房屋列表：{dataCount}/5760 （{((float)dataCount/5760):P}）";
+            if (dataCount != 5760)
+            {
+                Log("Info", $"当前房屋列表不全（{dataCount}/5760），无法写入缓存，请重新查询房区再试");
+                return;
+            }
+            lites.Clear();
+            foreach (var item in HousingListLite)
+            {
+                if (item != null)
+                {
+                    lites.Add(item);
+                }
+            }
+            list = lites.OrderBy(lites => lites.Area).ThenBy(lites => lites.Slot).ThenBy(lites => lites.Id).ToList();
+            ListCache.Clear();
+            foreach (var item in list)
+            {
+                ListCache.Add(item);
+            }
+            CacheCreateTime = HousingListLite[100].AddTime;
+            control.labelCurrentCacheTime.Text = $"当前缓存版本：{CacheCreateTime:u}";
+            Log("Info", "缓存成功");
+        }
+
+        private void ButtonRestoreListFromCache_Click(object sender, EventArgs e)
+        {
+            int cacheCount = ListCache.Count;
+            if (cacheCount != 5760)
+            {
+                Log("Info", $"当前缓存条目不正确（{cacheCount}/5760），无法进行推送");
+                return;
+            }
+            HousingListLite.Clear();
+            foreach (var item in ListCache)
+            {
+                if (item != null)
+                {
+                    HousingListLite.Add(item);
+                }
+            }
+            dataCount = HousingListLite.Count;
+            control.labelCurrentListCount.Text = $"当前房屋列表：{dataCount}/5760 （{((float)dataCount / 5760):P}）";
+            Log("Info", "缓存推送成功");
+        }
+
+        private void ButtonClearItemList_Click(object sender, EventArgs e)
+        {
+            HousingListLite.Clear();
+            lites.Clear();
+            dataCount = HousingListLite.Count;
+            control.labelCurrentListCount.Text = $"当前房屋列表：{dataCount}/5760";
+            Log("Info", "列表已清理");
+        }
+
+        private void ButtonCompare_Click(object sender, EventArgs e)
+        {
+            Log("Info", "比对中……");
+            lites.Clear();
+            foreach (var item in HousingListLite)
+            {
+                if (item != null)
+                {
+                    lites.Add(item);
+                }
+            }
+            var list = lites.OrderBy(lites => lites.Area).ThenBy(lites => lites.Slot).ThenBy(lites => lites.Id).ToList();
+            HousingListLite.Clear();
+            foreach (var item in list)
+            {
+                HousingListLite.Add(item);
+            }
+            dataCount = HousingListLite.Count;
+            int cacheCount = ListCache.Count;
+            control.labelCurrentListCount.Text = $"当前房屋列表：{dataCount}/5760 （{((float)dataCount/5760):P}）";
+            if (dataCount != 5760 || cacheCount != 5760)
+            {
+                Log("Info", $"当前房屋列表不全（{dataCount}/5760）或缓存条目不正确（{cacheCount}/5760），无法进行比对，请重新查询房区或重新缓存");
+                return;
+            }
+            var text = $"-------- {DateTime.Now:G} --------";
+            control.textBoxCompare.Text += text + Environment.NewLine;
+            control.textBoxCompare.SelectionStart = control.textBoxCompare.TextLength;
+            control.textBoxCompare.ScrollToCaret();
+            for (int i = 0; i < 5760; i++)
+            {
+                if (HousingListLite[i].Name != ListCache[i].Name)
+                {
+                    string area;
+                    switch (ListCache[i].Area)
+                    {
+                        case "海雾村":
+                            area = "海雾村\u3000\u3000";
+                            break;
+                        case "薰衣草苗圃":
+                            area = "薰衣草苗圃";
+                            break;
+                        case "高脚孤丘":
+                            area = "高脚孤丘\u3000";
+                            break;
+                        case "白银乡":
+                            area = "白银乡\u3000\u3000";
+                            break;
+                        default:
+                            area = "未知区域\u3000";
+                            break;
+                    }
+                    text = $"[{area}]   [{ListCache[i].Slot,2}区]   [{ListCache[i].Id,2}号]   [{ListCache[i].Size}房]   [{ListCache[i].Name}]==>[{HousingListLite[i].Name}]";
+                    control.textBoxCompare.Text += text + Environment.NewLine;
+                    control.textBoxCompare.SelectionStart = control.textBoxCompare.TextLength;
+                    control.textBoxCompare.ScrollToCaret();
+                    Log("Info", $"{text}");
+                }
+            }
+            Log("Info", "比对完成");
+        }
+
+        private void ButtonReadCache_Click(object sender, EventArgs e)
+        {
+            if (control.openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                var filePath = control.openFileDialog1.FileName;
+                if (File.Exists(filePath))
+                {
+                    ListCache.Clear();
+                    string s = File.ReadAllText(filePath);
+                    ObservableCollection<HousingItemLite> TempList = new ObservableCollection<HousingItemLite>();
+                    TempList = JsonConvert.DeserializeObject<ObservableCollection<HousingItemLite>>(s);
+                    foreach (var item in TempList)
+                    {
+                        ListCache.Add(item);
+                    }
+                    //Log("Debug", $"{item.AddTime}");
+                    CacheCreateTime = ListCache[100].AddTime;
+                    control.labelCurrentCacheTime.Text = $"当前缓存版本：{CacheCreateTime:u}";
+                    Log("Info", "读取缓存成功");
+                }
+                else
+                {
+                    Log("Info", $"{filePath}不存在");
+                }
+            }
+        }
+
+        private void ButtonSaveCache_Click(object sender, EventArgs e)
+        {
+            control.saveFileDialog1.FileName = $"HousingCheck-{CacheCreateTime.ToString("u").Replace(":", "").Replace(" ", "").Replace("-", "")}.item";
+            if (control.saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                if (control.saveFileDialog1.FileName != null)
+                {
+                    File.WriteAllText(control.saveFileDialog1.FileName, JsonConvert.SerializeObject(ListCache));
+                    Log("Info", "缓存保存成功");
+                }
+            }
+        }
+
+        private void ButtonSaveDetailToFile_Click(object sender, EventArgs e)
+        {
+            Log("Info", "数据提取中……");
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var L in HousingListEX)
+            {
+                stringBuilder.Append($"{L.Area}\t{L.Slot}\t{L.Id}\t{L.Size}\t{L.Name}\t" +
+
+                                        $"{((L.IsOpen) ? "开放" : "关闭")}\t{L.Tag1}\t{L.Tag2}\t{L.Tag3}\t" +
+
+                                        $"{((L.IsFC) ? "部队房" : "个人房")}\t{L.Owner_Name}\t{L.House_Description} \t" +
+
+                                        $"{((L.IsFC) ? ($"{L.FC_Leader}\t{L.FC_Name}\t{L.FC_Level}\t{L.FC_Population}\t{L.FC_Online}\t{L.FC_TimeCreated:F} ") : "")}" +     //{if(IsFC) {output FC infomation} else {output empty} }
+
+                                        $"{Environment.NewLine}");
+            }
+            Log("Info", "数据提取完成");
+            string fileName = $"HousingCheck-{DateTime.Now.ToString("u").Replace(":", "").Replace(" ", "").Replace("-", "")}.txt";
+            File.AppendAllText(
+                Path.Combine(Environment.CurrentDirectory, fileName),   //ACT根目录
+                stringBuilder.ToString()
+                );
+            Log("Info", $"已保存到{Environment.CurrentDirectory}, {fileName}");
+
+        }
+
 
         private string ListToString()
         {
@@ -451,31 +745,6 @@ namespace HousingCheck
             }
         }
 
-        private void ButtonSaveDetailToFile_Click(object sender, EventArgs e)
-        {
-            Log("Info", "数据提取中……");
-            StringBuilder stringBuilder = new StringBuilder();
-            foreach (var L in HousingListEX)
-            {
-                stringBuilder.Append(   $"{L.Area}\t{L.Slot}\t{L.Id}\t{L.Size}\t{L.Name}\t" +
-
-                                        $"{((L.IsOpen) ? "开放" : "关闭")}\t{L.Tag1}\t{L.Tag2}\t{L.Tag3}\t" +
-
-                                        $"{((L.IsFC) ? "部队房" : "个人房")}\t{L.Owner_Name}\t{L.House_Description} \t" +
-
-                                        $"{((L.IsFC) ? ($"{L.FC_Leader}\t{L.FC_Name}\t{L.FC_Level}\t{L.FC_Population}\t{L.FC_Online}\t{L.FC_TimeCreated:F} ") : "")}" +     //{if(IsFC) {output FC infomation} else {output empty} }
-
-                                        $"{Environment.NewLine}");
-            }
-            Log("Info", "数据提取完成");
-            string fileName = $"HousingCheck-{DateTime.Now.ToString("u").Replace(":", "").Replace(" ", "").Replace("-", "")}.txt";
-            File.AppendAllText(
-                Path.Combine(Environment.CurrentDirectory, fileName),   //ACT根目录
-                stringBuilder.ToString()
-                );
-            Log("Info", $"已保存到{Environment.CurrentDirectory}, {fileName}");
-
-        }
         
         private void OtterUpload(object sender, DoWorkEventArgs e)
         {
