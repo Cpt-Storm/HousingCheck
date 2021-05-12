@@ -180,8 +180,8 @@ namespace HousingCheck
         void NetworkReceived(string connection, long epoch, byte[] message)
         {
             var opcode = BitConverter.ToUInt16(message, 18);
-            //if (opcode != 733 /*&& message.Length != 2440*/) return;
-            //Log("Debug", $"OPCODE:{opcode}");
+            //if (opcode != 284 && message.Length != 2440) return;
+            //Log("Debug", $"OPCODE:{opcode}"); return;
             if (isLimitReleased)
             {
                 MoreDetailFlag = control.checkBoxDetailRecord.Checked;
@@ -190,7 +190,7 @@ namespace HousingCheck
             //{
             //    //Log("Info", $"opcode:{opcode}");
             //}
-            if (opcode == 733)
+            if (opcode == 284)
             {
                 var data_list = message.SubArray(32, message.Length - 32);
                 var data_header = data_list.SubArray(0, 8);
@@ -633,6 +633,12 @@ namespace HousingCheck
         private void ButtonSaveCache_Click(object sender, EventArgs e)
         {
             control.saveFileDialog1.FileName = $"HousingCheck-{CacheCreateTime.ToString("u").Replace(":", "").Replace(" ", "").Replace("-", "")}.item";
+            int cacheCount = ListCache.Count;
+            if (cacheCount != 5760)
+            {
+                Log("Info", $"当前缓存条目不正确（{cacheCount}/5760），无法保存文件，请重新查询房区或重新缓存");
+                return;
+            }
             if (control.saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 if (control.saveFileDialog1.FileName != null)

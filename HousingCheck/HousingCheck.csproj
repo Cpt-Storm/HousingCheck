@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
       <HintPath>..\..\HouseCheck\HouseCheck\Advanced Combat Tracker.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="FFXIV_ACT_Plugin">
       <HintPath>..\..\HouseCheck\HouseCheck\FFXIV_ACT_Plugin.dll</HintPath>
